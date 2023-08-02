@@ -14,16 +14,19 @@ if response.ok:
 
     #Recupere le titre du livre
     title = soup.find('title')
-    print(title.text)
 
     #Récuperation des données de la page HTML
     data = {}
     tdAttribute = soup.findAll('table')
     for trs in tdAttribute:
         tr = trs.findAll('tr')
-        for ths in tr:
-            data[ths.find('th')] = ths.find('td')
-            ##print(str(th) + ' : ' + str(td) + '\n')
 
-    print(data)
+        for ths in tr:
+            th = ths.find('th')
+            td = ths.find('td')
+            data[th.text] = td.text
+
+    print('Titre de la page HTML :', title.text)
+    print('Données de la page HTML :' + '\n', data)
+
 
