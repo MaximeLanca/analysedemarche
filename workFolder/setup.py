@@ -22,8 +22,8 @@ if response.ok:
     for trs in tdAttribute:
         tr = trs.findAll('tr')
         for ths in tr:
-            th = ths.find('th')
-            td = ths.find('td')
+            data[ths.find('th')] = ths.find('td')
             ##print(str(th) + ' : ' + str(td) + '\n')
 
+    print(data)
 
