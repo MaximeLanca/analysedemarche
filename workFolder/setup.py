@@ -19,7 +19,7 @@ if response.ok:
     # Product description extraction
     description = soup.find('div', {'id': 'content_inner'}).findAll('p')
     descriptionList = []
-    for a in description :
+    for a in description:
         descriptionList.append(a)
     print('Description du livre :' + '\n', descriptionList[3].text)
 
@@ -39,7 +39,24 @@ if response.ok:
     picture = soup.find('img')
     print('Lien de la converture du livre :' + '\n', picture.get('src'))
 
-    #csv.file creation
+    # review_rating extraction
+    reviewRating = soup.find('div', {'class': 'col-sm-6 product_main'})
+    b=[]
+    for a in reviewRating:
+        b.append(a)
+    c=((str(b[7])).strip())
+    print(c.splitlines())
+
+    ##list= []
+
+    ##for a in reviewRating:
+    ##    list.append(a)
+    ##variable = (list[2])
+    ##print(variable)
+
+    # category extraction
+
+    # csv.file creation
     with open('Information_du_livre.csv', 'w') as outf:
         outf.write('product_page_url,universal_product_code,title,price_including_tax,price_excluding_tax,number_available,product_description,category,review_rating,image_url\n')
         outf.write(url + ',' + data['UPC'] + ',' + title.text + ',' + data['Price (excl. tax)'] + ',' + data['Price (incl. tax)'] + ',' + data['Availability'] + ',' + descriptionList[3].text + ',' + picture.get('src'))
