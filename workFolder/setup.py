@@ -41,13 +41,12 @@ if response.ok:
 
     # review_rating extraction
     reviewRating = soup.find('div', {'class': 'col-sm-6 product_main'})
-    b=[]
-    for a in reviewRating:
-        b.append(a)
-    c=((str(b[7])).strip())
-    print(c.splitlines())
+    listRating = []
 
-    ##list= []
+    for a in reviewRating:
+        listRating.append(a)
+    changedList=(((str(listRating).strip())).replace('</p>,', '').replace('\n,', '').replace('<p', '').replace(" '\n',  ", ' ')).splitlines()
+    print(changedList[5])
 
     ##for a in reviewRating:
     ##    list.append(a)
