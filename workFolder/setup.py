@@ -40,31 +40,33 @@ if response.ok:
     print('Lien de la converture du livre :' + '\n', picture.get('src'))
 
     # review_rating extraction
-    listRating = []
     reviewRating = soup.find_all('p')
-    a=str(reviewRating[2])
-    print(a.splitlines())
+    listRating=str(reviewRating[2])
+    splitlinesList = listRating.splitlines()
+    replaceElementList = str(splitlinesList[0]).replace('<p class="', '').replace('">', '').lower()
+    listTransformation= replaceElementList.split()
 
+    for words in listTransformation:
 
-
-    ##changedList=(((str(listRating).strip())).replace("'\n'", '').replace('<p', '')).splitlines()
-    ##text = changedList[5]
-    ##text.split(',')
-    ##print(text)
-
-
-
-    ##for a in reviewRating:
-    ##    list.append(a)
-    ##variable = (list[2])
-    ##print(variable)
+        match words:
+            case 'one':
+                starNumbers= 1
+            case 'two':
+                starNumbers= 2
+            case 'three':
+                starNumbers=3
+            case 'four':
+                starNumbers=4
+            case 'five':
+                starNumbers=5
 
     # category extraction
+
 
     # csv.file creation
     with open('Information_du_livre.csv', 'w') as outf:
         outf.write('product_page_url,universal_product_code,title,price_including_tax,price_excluding_tax,number_available,product_description,category,review_rating,image_url\n')
-        outf.write(url + ',' + data['UPC'] + ',' + title.text + ',' + data['Price (excl. tax)'] + ',' + data['Price (incl. tax)'] + ',' + data['Availability'] + ',' + descriptionList[3].text + ',' + picture.get('src'))
+        outf.write(str(url) + ',' + data['UPC'] + ',' + str(title.text) + ',' + data['Price (excl. tax)'] + ',' + data['Price (incl. tax)'] + ',' + data['Availability'] + ',' + str(descriptionList[3].text) + ',' + str(starNumbers) + ',' + picture.get('src'))
 
     
 ##product_page_url
