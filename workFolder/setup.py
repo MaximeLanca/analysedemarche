@@ -40,13 +40,19 @@ if response.ok:
     print('Lien de la converture du livre :' + '\n', picture.get('src'))
 
     # review_rating extraction
-    reviewRating = soup.find('div', {'class': 'col-sm-6 product_main'})
     listRating = []
+    reviewRating = soup.find_all('p')
+    a=str(reviewRating[2])
+    print(a.splitlines())
 
-    for a in reviewRating:
-        listRating.append(a)
-    changedList=(((str(listRating).strip())).replace('</p>,', '').replace('\n,', '').replace('<p', '').replace(" '\n',  ", ' ')).splitlines()
-    print(changedList[5])
+
+
+    ##changedList=(((str(listRating).strip())).replace("'\n'", '').replace('<p', '')).splitlines()
+    ##text = changedList[5]
+    ##text.split(',')
+    ##print(text)
+
+
 
     ##for a in reviewRating:
     ##    list.append(a)
