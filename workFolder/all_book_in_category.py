@@ -9,8 +9,9 @@ def allbookincategory():
     url = 'http://books.toscrape.com/catalogue/category/books/classics_6/index.html'
     response = requests.get(url)
 
+    # Connection check
     if response.ok:
-        # Connection check
+
         soup = BeautifulSoup(response.text, 'html.parser')
         bookInCategory = []
         category = soup.findAll('h3')
