@@ -18,65 +18,23 @@ def book_informations():
 
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        # Title extraction from dataPartOne list
+        # Title extraction
         book_title = soup.title.text
 
-        # Data extraction Part one targeted information: Title, Availability, Review rating,
-        dataPartOne = []
-        classAttribut = soup.find('div', {'class': 'col-sm-6 product_main'})
-        for classAttributs in classAttribut :
-            dataPartOne.append(classAttributs)
-
-        # Availability book from dataPartOne list
+        # Availability book
         book_availability = soup.find('p', class_='instock availability').text
 
-        # Review rating from dataPartOne LIst
+        # Review rating book
         rating_system = {'<p class="star-rating One">': '1/5', '<p class="star-rating Two">': '2/5', '<p class="star-rating Three">': '3/5', '<p class="star-rating Four">': '4/5', '<p class="star-rating Five">': '5/5'}
         rating_book = str(soup.find('p', class_='star-rating')).splitlines()
         for i in range(0, 6):
                 for a in rating_system:
                     if a == rating_book[i]:
-                        print(rating_book[i])
-                if i==6 :
+                        break
+                if i == 6:
                     print('--Rating book error--')
-                    
-                    
 
-
-
-
-
-
-        
-
-        
-        
-
-        #print(a)
-
-
-        listRating = str(dataPartOne[7])
-        splitlinesList = listRating.splitlines()
-        replaceElementList = str(splitlinesList[0]).replace('<p class="', '').replace('">', '').lower()
-        listTransformation = replaceElementList.split()
-
-        for words in listTransformation:
-            match words:
-                case 'one':
-                    starNumbers = 1
-                case 'two':
-                    starNumbers = 2
-                case 'three':
-                    starNumbers = 3
-                case 'four':
-                    starNumbers = 4
-                case 'five':
-                    starNumbers = 5
-
-        """
-        Data extraction Part two
-        targeted information: UPC, Product type, Price excl. tax, Price incl. tax, Tax, Number of review
-        """
+        # UPC book extraction
         dataPartTwo = {}
         tdAttribute = soup.findAll('table')
         for trs in tdAttribute:
@@ -89,6 +47,12 @@ def book_informations():
 
         # Picture extraction
         picture = soup.find('img')
+        #print(picture['src'])
+        src = picture.get('src')
+        if src:
+            # resolve any relative urls to absolute urls using base URL
+            src = requests.compat.urljoin(url, src)
+            print(">>", src)
 
         # Product description extraction
         description = soup.find('div', {'id': 'content_inner'}).findAll('p')
@@ -106,7 +70,8 @@ def book_informations():
         # csv.file creation
         with open('Information_du_livre.csv', 'w') as outf:
             outf.write('product_page_url,universal_product_code,title,price_including_tax,price_excluding_tax,number_available,product_description,category,review_rating,image_url\n')
-            outf.write(str(url) + ',' + dataPartTwo['UPC'] + ' , ' + book_title + ',' + dataPartTwo['Price (excl. tax)'] + ',' + dataPartTwo['Price (incl. tax)'] + ',' + book_availability + ',' + productDescription + ',' + categoryExtraction[3].text + ',' + str(starNumbers) + ',' + picture.get('src'))
-
+            outf.write(str(url) + ',' + dataPartTwo['UPC'] + ' , ' + book_title + ',' + dataPartTwo['Price (excl. tax)'] + ',' + dataPartTwo['Price (incl. tax)'] + ',' + book_availability + ',' + productDescription + ',' + categoryExtraction[3].text + ',' + rating_book[i] + ',' + picture.get('src'))
+    else:
+        print('-- Connexion server error --')
 
 book_informations()
