@@ -2,6 +2,10 @@
 ##PROJET 01 - OpenClassrooms
 
 import requests
+import io
+from PIL import Image
+import hashlib
+from pathlib import Path
 from bs4 import BeautifulSoup
 
 
@@ -48,11 +52,15 @@ def book_informations():
         # Picture extraction
         picture = soup.find('img')
         #print(picture['src'])
-        src = picture.get('src')
-        if src:
-            # resolve any relative urls to absolute urls using base URL
-            src = requests.compat.urljoin(url, src)
-            print(">>", src)
+        web_link_book = picture.get('src')
+        if web_link_book:
+            web_link_book = requests.compat.urljoin(url, web_link_book)
+
+        picture_url_book = requests.get(web_link_book).content
+        image_file_book = io.BytesIO(picture_url_book)
+        image = Image.open(image_file_book).convert("RGB")
+        file_path = Path("../load_picture", hashlib.sha1(picture_url_book).hexdigest()[:10] + ".png")
+        image.save(file_path, "PNG", quality=80)
 
         # Product description extraction
         description = soup.find('div', {'id': 'content_inner'}).findAll('p')
@@ -70,7 +78,7 @@ def book_informations():
         # csv.file creation
         with open('Information_du_livre.csv', 'w') as outf:
             outf.write('product_page_url,universal_product_code,title,price_including_tax,price_excluding_tax,number_available,product_description,category,review_rating,image_url\n')
-            outf.write(str(url) + ',' + dataPartTwo['UPC'] + ' , ' + book_title + ',' + dataPartTwo['Price (excl. tax)'] + ',' + dataPartTwo['Price (incl. tax)'] + ',' + book_availability + ',' + productDescription + ',' + categoryExtraction[3].text + ',' + rating_book[i] + ',' + picture.get('src'))
+            outf.write(str(url) + ',' + dataPartTwo['UPC'] + ' , ' + book_title + ',' + dataPartTwo['Price (excl. tax)'] + ',' + dataPartTwo['Price (incl. tax)'] + ',' + book_availability + ',' + productDescription + ',' + categoryExtraction[3].text + ',' + rating_book[i] + ',' + web_link_book)
     else:
         print('-- Connexion server error --')
 
