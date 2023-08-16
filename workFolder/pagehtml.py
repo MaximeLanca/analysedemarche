@@ -29,12 +29,32 @@ def book_informations():
 
         # Availability book from dataPartOne list
         book_availability = soup.find('p', class_='instock availability').text
-        print(book_availability)
-
-        availability = str(dataPartOne[5]).splitlines()
-        availableBook= availability[3]
 
         # Review rating from dataPartOne LIst
+        rating_system = {'<p class="star-rating One">': '1/5', '<p class="star-rating Two">': '2/5', '<p class="star-rating Three">': '3/5', '<p class="star-rating Four">': '4/5', '<p class="star-rating Five">': '5/5'}
+        rating_book = str(soup.find('p', class_='star-rating')).splitlines()
+        for i in range(0, 6):
+                for a in rating_system:
+                    if a == rating_book[i]:
+                        print(rating_book[i])
+                if i==6 :
+                    print('--Rating book error--')
+                    
+                    
+
+
+
+
+
+
+        
+
+        
+        
+
+        #print(a)
+
+
         listRating = str(dataPartOne[7])
         splitlinesList = listRating.splitlines()
         replaceElementList = str(splitlinesList[0]).replace('<p class="', '').replace('">', '').lower()
