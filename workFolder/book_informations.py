@@ -7,6 +7,7 @@ from PIL import Image
 import hashlib
 from pathlib import Path
 import csv
+from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 
@@ -19,7 +20,7 @@ def book_informations():
     # Connection check
     if response.ok:
 
-        soup = BeautifulSoup(response.text, 'html.parser')
+        soup = BeautifulSoup(response.content, 'html.parser')
 
         # Title extraction from web site
         book_title_in_page_web = soup.find('h1').text
@@ -39,23 +40,18 @@ def book_informations():
         else:
             print('--Rating book error--')
 
-        # UPC book extraction
+        # book extraction
         dictionary_for_put_book_information_from_page_web = {}
-        td_attribute = soup.findAll('table')
-
-        for trs in td_attribute:
-            tr = trs.findAll('tr')
-
-            for ths in tr:
-                th = ths.find('th')
-                td = ths.find('td')
-                dictionary_for_put_book_information_from_page_web[th.text] = td.text
+        for tr in soup.find_all('tr'):
+            th = tr.find('th')
+            td = tr.find('td')
+            dictionary_for_put_book_information_from_page_web[th.text] = td.text
 
         # Picture extraction
         picture_in_page_web = soup.find('img')
         web_link_book = picture_in_page_web.get('src')
         if web_link_book:
-            web_link_book = requests.compat.urljoin(url_book_in_web_site, web_link_book)
+            web_link_book = urljoin(url_book_in_web_site, web_link_book)
 
         picture_url_book = requests.get(web_link_book).content
         image_file_book_in_page_web = io.BytesIO(picture_url_book)
@@ -67,13 +63,16 @@ def book_informations():
         description_book_in_page_web = (soup.find('p', class_=False)).text
 
         # category extraction
-        category_in_page_web = soup.findAll('a')
+        #category_in_page_web= soup.find('a', href=True)
+        
+        category_in_page_web = soup.find_all('a')
         list_for_extract_book_information = []
         for a in category_in_page_web:
-            t = list_for_extract_book_information.append(a.text)
+            list_for_extract_book_information.append(a.text)
+        print(list_for_extract_book_information)
 
         # csv.file creation
-        with open('../output/data_book.csv', 'w', newline='') as csvfile:
+        with open('../output/data_book.csv', 'w', newline='', encoding='utf-8') as csvfile:
             fieldnames = ['URL', 'UPC', 'Book Title', 'Price (excl. tax)', 'Price (incl. tax)', 'Number_available',
                           'Product description', 'Category book', 'Review_rating', 'Picture URL']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -88,7 +87,7 @@ def book_informations():
                                  'Price (incl. tax)'],
                              'Number_available': book_availability_in_page_web,
                              'Product description': description_book_in_page_web,
-                             'Category book': t,
+                             'Category book': list_for_extract_book_information,
                              'Review_rating': rating_book_extract_of_dictionary,
                              'Picture URL': web_link_book
                              })
