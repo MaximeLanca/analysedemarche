@@ -41,7 +41,6 @@ def get_book_informations_in_html_page() -> tuple:
                                    get_description_book, tag_href_list[3], get_book_title,
                                    book_rating_value_dictionary, get_picture_link_book]
 
-    print(gathering_book_informations)
     return gathering_book_informations
 
 
