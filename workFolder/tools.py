@@ -38,7 +38,7 @@ def data_books_extraction_to_csv():
                          'Price (incl. tax)': get_dictionary_in_tuple['Price (incl. tax)'],
                          'Number_available': get_dictionary_in_tuple['Availability'],
                          'Product description': recovery_book_information_from_tuple[2],
-                         'Category book': get_dictionary_in_tuple['Product Type'],
+                         'Category book': recovery_book_information_from_tuple[3],
                          'Review_rating': recovery_book_information_from_tuple[5],
                          'Picture URL': recovery_book_information_from_tuple[6]
                          })
