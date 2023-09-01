@@ -2,17 +2,19 @@
 ##PROJET 01 - OpenClassrooms
 import re
 
-from __init__ import connection_check_url
-from constents import books_toscrape_url
-from book_informations import get_book_informations_in_html_page
+from scraping import connection_check_url
+from workFolder.constants import books_toscrape_url, link_book_from_catalogue_web_page
+
 
 def select_all_url_categories() -> list:
-    reconstitution_url = []
     soup = connection_check_url(books_toscrape_url)
-    for a in soup.find_all(href=re.compile("catalogue/category/books")):
-        reconstitution_url.append(books_toscrape_url + a['href'])
-    #print(reconstitution_url)
-    return reconstitution_url
-def extraction_books_in_each_categories(reconstitution_url : list):
-    for url_selection in reconstitution_url:
-    soup=connection_check_url(url_selection)
+    categories_url_reconstitution = []
+    for category_link in soup.find('ul', class_='nav nav-list').find('ul').find_all('a'):
+        categories_url_reconstitution.append(books_toscrape_url + category_link['href'])
+    books_url_reconstitution = []
+    for a in categories_url_reconstitution:
+        soup = connection_check_url(a)
+        b = soup.find('ol', class_='row').find('h3').find('a')
+        books_url_reconstitution.append((link_book_from_catalogue_web_page + b['href']).replace('../../../', ''))
+    return b
+
