@@ -22,6 +22,3 @@ def get_all_url_categories():
     for url_reconstitution in books_url_reconstitution:
         get_book_informations_in_html_page(url_reconstitution)
 
-
-
-
