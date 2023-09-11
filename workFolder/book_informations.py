@@ -1,63 +1,71 @@
 import csv
 from urllib.parse import urljoin
-
 from workFolder.scraping import connection_url
-from workFolder.save import get_import_selected_picture
+from workFolder.save import save_picture
 
 
-def get_book_informations_in_html_page(url_compiled: str):
-    """return a tuple containing book information"""
+def get_book_informations(url_compiled: str) -> list:
+    """return a list containing book information"""
     soup = connection_url(url_compiled)
+
     book_availability = soup.find('p', class_='instock availability').text.strip
+
     book_rating = soup.find('p', class_='star-rating')
-    class_html_tag = book_rating['class']
-    dictionary_for_check_rating = {'One': '1/5', 'Two': '2/5', 'Three': '3/5', 'Four': '4/5', 'Five': '5/5'}
-    for a in dictionary_for_check_rating:
-        if a == class_html_tag[-1]:
-            book_rating_value_dictionary = dictionary_for_check_rating[class_html_tag[-1]]
+    class_attribute = book_rating['class']
+    check_rating = {'One': '1/5', 'Two': '2/5', 'Three': '3/5', 'Four': '4/5', 'Five': '5/5'}
+    for rating in check_rating:
+        if rating == class_attribute[-1]:
+            book_rating_value = check_rating[class_attribute[-1]]
             break
     else:
         print('--Rating book error--')
 
-    product_informations_dict = {}
+    product_informations = {}
     for tr in soup.find_all('tr'):
         th = tr.find('th')
         td = tr.find('td')
-        product_informations_dict[th.text] = td.text
+        product_informations[th.text] = td.text
 
     if (soup.find('p', class_=False)):
-        description_book = (soup.find('p', class_=False)).text
+        book_description = (soup.find('p', class_=False)).text
     else:
-        description_book = 'unavailable'
+        book_description = 'unavailable'
 
-    href_tag_list = []
+    href_tag = []
     book_category = soup.find('ul', class_='breadcrumb').find_all('a')
     for a in book_category:
-        href_tag_list.append(a.text)
+        href_tag.append(a.text)
 
     book_title = soup.find('h1').text
 
     book_picture = soup.find('img')
 
-    picture_link_book = urljoin(url_compiled, book_picture.get('src'))
+    picture_link = urljoin(url_compiled, book_picture.get('src'))
 
-    gathering_book_informations = [book_availability, product_informations_dict,
-                                   description_book, href_tag_list[2], book_title,
-                                   book_rating_value_dictionary, picture_link_book]
+    book_informations = [book_availability, product_informations, book_description, href_tag[2], book_title,
+                         book_rating_value, picture_link]
 
-    get_import_selected_picture(gathering_book_informations[4], gathering_book_informations[6])
-    get_data_books_extraction_to_csv(gathering_book_informations)
+    save_picture(book_informations[4], book_informations[6])
+    save_books_inforations_in_csv_file(book_informations)
+    return book_informations
 
 
-def get_data_books_extraction_to_csv(recovery_book_information: list):
+def csv_file_creation():
+    with open('../output/books_informations.csv', 'w', newline='', encoding='utf-8') as csvfile:
+        fieldnames = ['URL', 'UPC', 'Book Title', 'Price (excl. tax)', 'Price (incl. tax)', 'Number_available',
+                      'Product description', 'Category book', 'Review_rating', 'Picture URL']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+
+
+def save_books_inforations_in_csv_file(recovery_book_information: list):
     """csv extraction file"""
     books_informations_dict = recovery_book_information[1]
-    with open('../output/books_informations.csv', 'w', newline='', encoding='utf-8') as csvfile:
+    with open('../output/books_informations.csv', 'a', newline='', encoding='utf-8') as csvfile:
         fieldnames = ['URL', 'UPC', 'Book Title', 'Price (excl. tax)', 'Price (incl. tax)', 'Number_available',
                       'Product description', 'Category book', 'Review_rating', 'Picture URL']
 
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
         writer.writerow({'URL': recovery_book_information[6],
                          'UPC': books_informations_dict['UPC'],
                          'Book Title': recovery_book_information[4],
