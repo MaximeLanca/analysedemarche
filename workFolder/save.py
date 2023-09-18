@@ -1,4 +1,6 @@
 import requests
+from workFolder.constants import fieldnames
+import csv
 
 
 def save_picture(book_name, picture_link):
@@ -9,4 +11,28 @@ def save_picture(book_name, picture_link):
         print(f'--- Successful import of "{book_name}" picture ---')
         f.close()
 
+
+def create_csv_file():
+    """csv creation file"""
+    with open('../output/books_informations.csv', 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+
+
+def save_books_informations_in_csv_file(book_informations: dict):
+   """save information in csv file"""
+   with open('../output/books_informations.csv', 'a', newline='', encoding='utf-8') as csvfile:
+       writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+       writer.writerow({'URL': book_informations['url'],
+                        'UPC': book_informations['UPC'],
+                        'Book Title': book_informations['title'],
+                        'Price (excl. tax)': book_informations['Price (excl. tax)'],
+                        'Price (incl. tax)': book_informations['Price (incl. tax)'],
+                        'Number_available': book_informations['Availability'],
+                        'Product description': book_informations['description'],
+                        'Category book': book_informations['category'],
+                        'Review_rating': book_informations['rating'],
+                        'Picture URL': book_informations['picture_link'],
+                        })
+   print(f'--- Successful extraction of {book_informations["title"]} books informations ---')
 
