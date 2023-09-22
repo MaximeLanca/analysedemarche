@@ -1,19 +1,26 @@
 import requests
 from workFolder.constants import FIELDNAMES
 import csv
+import os
 
 
 def save_picture(book_title, upc_number, picture_link):
     """book picture import from html page"""
     picture = requests.get(picture_link).content
-    with open(f"../load_picture/{upc_number}.png", 'wb') as f:
+    with open(f"../output/load_picture/{upc_number}.png", 'wb') as f:
         f.write(picture)
         print(f'--- Successful import of "{book_title}" picture ---')
         f.close()
 
 
-def create_csv_file():
-    """csv creation file"""
+def create_folders_and_csv_file():
+    """folders and csv file creation"""
+    try:
+        os.mkdir('../output')
+        os.mkdir('../output/load_picture')
+    except:
+        print('Folders and files already exist. deliverables will be create in existing folder ')
+
     with open('../output/books_informations.csv', 'w', newline='', encoding='utf-8') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=FIELDNAMES)
         writer.writeheader()

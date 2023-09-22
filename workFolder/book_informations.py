@@ -7,6 +7,7 @@ from workFolder.save import save_books_informations_in_csv_file
 def get_book_informations(url_compiled: str) -> dict:
     """return a list containing book information"""
     book_informations = {}
+
     soup = connection_url(url_compiled)
     book_informations['url'] = url_compiled
 
