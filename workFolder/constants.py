@@ -1,5 +1,5 @@
-books_toscrape_url = 'https://books.toscrape.com/'
-link_book_from_catalogue = 'https://books.toscrape.com/catalogue/'
-fieldnames = ['URL', 'UPC', 'Book Title', 'Price (excl. tax)', 'Price (incl. tax)', 'Number_available',
+BOOKS_TOSCRAPE_URL = 'https://books.toscrape.com/'
+LINK_BOOK_FROM_CATALOGUE = 'https://books.toscrape.com/catalogue/'
+FIELDNAMES = ['URL', 'UPC', 'Book Title', 'Price (excl. tax)', 'Price (incl. tax)', 'Number_available',
               'Product description', 'Category book', 'Review_rating', 'Picture URL']
-#toutes les constantes en majuscules
+

@@ -47,7 +47,7 @@ def get_book_informations(url_compiled: str) -> dict:
     picture_link = urljoin(url_compiled, book_picture.get('src'))
     book_informations['picture_link'] = picture_link
 
-    save_picture(book_informations['title'], book_informations['picture_link'])
+    save_picture(book_informations['title'], book_informations['UPC'], book_informations['picture_link'])
     save_books_informations_in_csv_file(book_informations)
 
     return book_informations

@@ -3,20 +3,40 @@
 from urllib.parse import urljoin
 
 from scraping import connection_url
-from workFolder.constants import books_toscrape_url, link_book_from_catalogue
+from workFolder.constants import BOOKS_TOSCRAPE_URL
 from workFolder.book_informations import get_book_informations
 
 
 def get_all_url_categories():
+    """get book link from list for scraping"""
+    soup = connection_url(BOOKS_TOSCRAPE_URL)
+    categories_url = []
+    for link in soup.find('ul', class_='nav nav-list').find('ul').find_all('a'):
+        url = BOOKS_TOSCRAPE_URL + link['href']
+        categories_url.append(url)
 
-    soup = connection_url(books_toscrape_url)
-    categories_url_reconstitution = []
-    for category_link in soup.find('ul', class_='nav nav-list').find('ul').find_all('a'):
-        categories_url_reconstitution.append(books_toscrape_url + category_link['href'])
-        print(categories_url_reconstitution)
-    for categories_url_reconstitutions in categories_url_reconstitution:
-        soup = connection_url(categories_url_reconstitutions)
-        for books_links in soup.find('ol', class_='row').find_all('a', title=True):
-            print(categories_url_reconstitutions)
-            get_book_informations(urljoin(categories_url_reconstitutions, books_links['href']))
+        try:
+            soup = connection_url(url)
+            current_category_page = soup.find('ul', class_='pager').find('li', class_='current')
+            decomposed_current_category_page = current_category_page.text.split()
+            total_pages_numbers = decomposed_current_category_page[3]
+            for page_number in range(2, (int(total_pages_numbers)+1)):
+                page_url = url.replace('index', f'page-{page_number}')
+                categories_url.append(page_url)
+                print(f"Analysis of the number of pages in each category : {total_pages_numbers} "
+                      f"pages to cover for one category")
+        except:
+            print("Analysis of the number of pages in each category : 1 pages to cover for one category")
+
+    get_all_url_books(categories_url)
+
+
+def get_all_url_books(categories_url):
+    """get books links from list for scraping"""
+    for category_url in categories_url:
+        soup = connection_url(category_url)
+        for books_link in soup.find('ol', class_='row').find_all('a', title=True):
+            get_book_informations(urljoin(category_url, books_link['href']))
+
+
 
