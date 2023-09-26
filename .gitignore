@@ -1,1 +1,11 @@
-Ds_Store
+#Mac folder
+.DS_Store
+
+#Extract picture folder
+pictures
+
+#csv files folder
+output
+
+# .idea/
+.idea/
