@@ -7,7 +7,7 @@ import os
 def save_picture(book_title, upc_number, picture_link):
     """book picture import from html page"""
     picture = requests.get(picture_link).content
-    with open(f"../output/load_picture/{upc_number}.png", 'wb') as f:
+    with open(f"../output/pictures/{upc_number}.png", 'wb') as f:
         f.write(picture)
         print(f'--- Successful import of "{book_title}" picture ---')
         f.close()
@@ -17,7 +17,7 @@ def create_folders_and_csv_file():
     """folders and csv file creation"""
     try:
         os.mkdir('../output')
-        os.mkdir('../output/load_picture')
+        os.mkdir('../output/pictures')
     except:
         print('Folders and files already exist. deliverables will be create in existing folder ')
 

@@ -15,16 +15,15 @@ def get_all_url_categories():
         url = BOOKS_TOSCRAPE_URL + link['href']
         categories_url.append(url)
 
+        soup = connection_url(url)
         try:
-            soup = connection_url(url)
             current_category_page = soup.find('ul', class_='pager').find('li', class_='current')
-            decomposed_current_category_page = current_category_page.text.split()
-            total_pages_numbers = decomposed_current_category_page[3]
+            current_category_page = current_category_page.text.split()
+            total_pages_numbers = current_category_page[3]
             for page_number in range(2, (int(total_pages_numbers)+1)):
                 page_url = url.replace('index', f'page-{page_number}')
                 categories_url.append(page_url)
-                print(f"Analysis of the number of pages in each category : {total_pages_numbers} "
-                      f"pages to cover for one category")
+                print(f"Fetched page {page_number} for category {page_url}")
         except:
             print("Analysis of the number of pages in each category : 1 pages to cover for one category")
 
