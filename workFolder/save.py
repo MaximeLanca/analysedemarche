@@ -1,5 +1,5 @@
 import requests
-from workFolder.constants import FIELDNAMES
+from constants import FIELDNAMES
 import csv
 import os
 

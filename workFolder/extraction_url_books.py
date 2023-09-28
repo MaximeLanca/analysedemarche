@@ -1,10 +1,10 @@
 ##SCRAPING
-##PROJET 01 - OpenClassrooms
+##PROJET 02 - OpenClassrooms
 from urllib.parse import urljoin
 
 from scraping import connection_url
-from workFolder.constants import BOOKS_TOSCRAPE_URL
-from workFolder.book_informations import get_book_informations
+from constants import BOOKS_TOSCRAPE_URL
+from book_informations import get_book_informations
 
 
 def get_all_url_categories():

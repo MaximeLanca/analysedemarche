@@ -1,7 +1,7 @@
 from urllib.parse import urljoin
-from workFolder.scraping import connection_url
-from workFolder.save import save_picture
-from workFolder.save import save_books_informations_in_csv_file
+from scraping import connection_url
+from save import save_picture
+from save import save_books_informations_in_csv_file
 
 
 def get_book_informations(url_compiled: str) -> dict:
